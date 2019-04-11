@@ -50,7 +50,7 @@ def genDistanceMatrix(query):
 
 	for x in myresult:
 		tempArray = []
-		matriculas.append(x[1])
+		matriculas.append(x[0])
 		for s in x[2]:
 			tempArray.append(int(s))
 		horarios.append(tempArray)
@@ -76,28 +76,32 @@ grupos = ch.criaGrupos(resultado[0], 4)
 clusterMatriculas = []
 #
 qryValues = ""
+qryGrupo = ""
+mycursor = conexao.mydb.cursor()
+#
 j=1
 for g in grupos:
-	gm = []
-	i=1
-	qryValues += "("+str(turma)+",'"
-	for m in g:
-		qryValues=qryValues +matriculas[m]
-		if i < len(g):
-			qryValues=qryValues + ","
-		else:
-			qryValues=qryValues + "')"
-		i = i +1
-	if j < len(grupos):
-		qryValues+=","
+	qryGrupo = "insert into grupo (nome,id_turma) values('Grupo Temp "+str(j)+"',"+str(turma)+")";
+	print("qryGrupo %s"%qryGrupo)
+	mycursor.execute(qryGrupo)
+	#pega o ultimo id de grupo cadastrado
+	lastIdGrupo = mycursor.lastrowid
+	print ("lastIdGrupo %s"%lastIdGrupo)
+	#inicia o cadastro dos membros deste grupo
+	qryValues = ""
+	if(lastIdGrupo != ""):
+		i=1
+		for m in g:
+			qryValues+= "("+str(lastIdGrupo)+"," +str(matriculas[m])+ ")"
+			if i < len(g):
+				qryValues=qryValues + "," 
+			i = i +1
 	j+=1
-
+	#insere os membros do grupo atual
 	print("qryValues %s"%qryValues)
-
-qryInsert = "insert into grupo_temp (id_turma, formacao) values "+qryValues
-print(qryInsert)
-mycursor = conexao.mydb.cursor()
-mycursor.execute(qryInsert)
+	qryInsert = "insert into grupo_aluno (id_grupo,id_aluno) values "+qryValues
+	print("qryInsert %s"%qryInsert)
+	mycursor.execute(qryInsert)
 conexao.mydb.commit()
 print(mycursor.rowcount, "record inserted.")
 #print("cluster matriculas %s"%clusterMatriculas)
