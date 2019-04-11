@@ -31,7 +31,7 @@ def createDendogram(matrix):
 	fig = plt.figure(figsize=(25, 10))
 	dn = dendrogram(Z)
 	fl = fcluster(Z,6,criterion='maxclust')
-	#print("dn %s"%dn)
+	print("dn %s"%dn)
 	plt.show()
 
 
@@ -61,54 +61,23 @@ def genDistanceMatrix(query):
 	return [m,matriculas]
 
 
-
+import clusterHierarquico as ch
 #Gerando matriz de dissimilaridade
 #gruposFormadosMatr = []
 #gruposFormados = []
-resultado = genDistanceMatrix("select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u where ativo = 'S' and u.id = h.id_usuario")
+query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma=1"
+resultado = genDistanceMatrix(query)
 print("matriz de similaridade %s"%resultado[0])
-import shrinkingCluster as sc
-resCluster =sc.SuperCluster(resultado[0], 4,3, 2,1,1)
-print(resCluster)
+print("matriculas %s"%resultado[1])
+matriculas = resultado[1]
+#createDendogram(resultado[0])
+grupos = ch.criaGrupos(resultado[0], 3)
+clusterMatriculas = []
+#
+for g in grupos:
+	gm = []
+	for m in g:
+		gm.append(matriculas[m])
+	clusterMatriculas.append(gm)
 
-#print(resultado[0])
-#ds = 1-2*resultado[0]
-#print(ds)
-#np.fill_diagonal(ds,0)
-#print(ds)
-#createDendogram(1-resultado[0])
-#metodos de criacao de grupos
-#gruposFormados = createGrupos.geraGrupos2(1-resultado[0],3)
-#for grupo in gruposFormados:
-	#gf = []
-	#for pos in grupo:
-#		gf.append(resultado[1][pos])
-#	gruposFormadosMatr.append(gf)
-
-#print(gruposFormadosMatr)
-
-#createGraph(1-resultado[0])
-
-#print(findMaxWeightMatch(1-resultado[0]))
-
-#createGrupos.geraGruposG(1-resultado[0], 3)
-
-
-#print(xx)
-#print("G edges %s"%G.edges(data=True))
-
-#print(edge_labels)
-#edge_colors = dict(((u, v), 'b') for u, v, d in G.edges(data=True) if d["weight"] > 0.5)
-#edge_colors = dict(((u, v), 'red') for u, v, d in G.edges(data=True) if d["weight"] >= 0.5) 
-#edge_colors.update(dict(((u, v), '#F08080') for u, v, d in G.edges(data=True) if d["weight"] < 0.5))
-#print(edge_colors)
-
-
-
-	#minmax_kmeans.runKmeans(horarios,2,2,2,10)
-	#horarios_alunos = np.array(horarios)
-	#kmeans = KMeans(n_clusters=2, random_state=0).fit(m)
-	#print(kmeans.labels_)
-#M = genDistanceMatrix("select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u where u.id = h.id_usuario and h.ativo = 'S' and (u.matricula = '20182TIJG0584' or u.matricula= '20182TIJG0649' or u.matricula = '20182TIJG0487')")
-#print("M %s"%M[0])
-
+print("cluster matriculas %s"%clusterMatriculas)

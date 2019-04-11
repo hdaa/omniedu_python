@@ -148,6 +148,7 @@ def criaGrupos(distance_matrix, nMembers):
 		print("clusters %s"%clusters)
 	#clusters finais
 	print("clusters finais %s"%clusters)
+	return clusters
 
 
 
