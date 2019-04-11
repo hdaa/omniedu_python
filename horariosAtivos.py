@@ -65,19 +65,39 @@ import clusterHierarquico as ch
 #Gerando matriz de dissimilaridade
 #gruposFormadosMatr = []
 #gruposFormados = []
-query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma=1"
+turma = 1
+query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma="+str(turma)
 resultado = genDistanceMatrix(query)
 print("matriz de similaridade %s"%resultado[0])
 print("matriculas %s"%resultado[1])
 matriculas = resultado[1]
 #createDendogram(resultado[0])
-grupos = ch.criaGrupos(resultado[0], 3)
+grupos = ch.criaGrupos(resultado[0], 4)
 clusterMatriculas = []
 #
+qryValues = ""
+j=1
 for g in grupos:
 	gm = []
+	i=1
+	qryValues += "("+str(turma)+",'"
 	for m in g:
-		gm.append(matriculas[m])
-	clusterMatriculas.append(gm)
+		qryValues=qryValues +matriculas[m]
+		if i < len(g):
+			qryValues=qryValues + ","
+		else:
+			qryValues=qryValues + "')"
+		i = i +1
+	if j < len(grupos):
+		qryValues+=","
+	j+=1
 
-print("cluster matriculas %s"%clusterMatriculas)
+	print("qryValues %s"%qryValues)
+
+qryInsert = "insert into grupo_temp (id_turma, formacao) values "+qryValues
+print(qryInsert)
+mycursor = conexao.mydb.cursor()
+mycursor.execute(qryInsert)
+conexao.mydb.commit()
+print(mycursor.rowcount, "record inserted.")
+#print("cluster matriculas %s"%clusterMatriculas)
