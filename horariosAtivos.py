@@ -47,10 +47,12 @@ def genDistanceMatrix(query):
 	myresult = mycursor.fetchall()
 	horarios =[]
 	matriculas = []
+	ids =[]
 
 	for x in myresult:
 		tempArray = []
-		matriculas.append(x[0])
+		matriculas.append(x[1])
+		ids.append(x[0])
 		for s in x[2]:
 			tempArray.append(int(s))
 		horarios.append(tempArray)
@@ -65,7 +67,7 @@ import clusterHierarquico as ch
 #Gerando matriz de dissimilaridade
 #gruposFormadosMatr = []
 #gruposFormados = []
-turma = 1
+turma = 4
 query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma="+str(turma)
 resultado = genDistanceMatrix(query)
 print("matriz de similaridade %s"%resultado[0])
@@ -99,9 +101,9 @@ for g in grupos:
 	j+=1
 	#insere os membros do grupo atual
 	print("qryValues %s"%qryValues)
-	qryInsert = "insert into grupo_aluno (id_grupo,id_aluno) values "+qryValues
-	print("qryInsert %s"%qryInsert)
-	mycursor.execute(qryInsert)
-conexao.mydb.commit()
-print(mycursor.rowcount, "record inserted.")
+	#qryInsert = "insert into grupo_aluno (id_grupo,id_aluno) values "+qryValues
+	#print("qryInsert %s"%qryInsert)
+	#mycursor.execute(qryInsert)
+#conexao.mydb.commit()
+#print(mycursor.rowcount, "record inserted.")
 #print("cluster matriculas %s"%clusterMatriculas)

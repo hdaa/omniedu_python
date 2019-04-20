@@ -40,6 +40,7 @@ def criaGrupos(distance_matrix, nMembers):
 	countMembers = 0
 	clusters =[]
 	totalClusters = ceil(len(distance_matrix)/nMembers)
+	print("totalClusters %s"%totalClusters)
 	nClusters = 0
 	menorDist = 100
 	menorDistCol = 0
@@ -57,7 +58,7 @@ def criaGrupos(distance_matrix, nMembers):
 	while len(clusters) < totalClusters:
 		#Iniciando novo cluster
 		grupo = []
-		if (len(distance_matrix) - countElements(clusters)) < nMembers:
+		if (len(distance_matrix) - countElements(clusters)) <= nMembers:
 			grupo = sobrou(jaTemGrupo,distance_matrix)[0]
 			clusters.append(grupo)
 			print("clusters %s"%clusters)
@@ -84,7 +85,8 @@ def criaGrupos(distance_matrix, nMembers):
 				while (len(grupo) < nMembers) and (len(grupo) + countElements(clusters)) < len(distance_matrix):
 					#se o grupo tiver menos membros que o esperado continuar procurando os mais próximos
 					#verifica se do par linha,coluna qual a distancia minima entre linha e os outros membros e entre
-					print("distance_matrix %s"%distance_matrix)
+					print("distance_matrix")
+					print(distance_matrix)
 					# coluna e os outros membros
 					print("t1 %s"%t1)
 					print("t2 %s"%t2)
@@ -125,6 +127,8 @@ def criaGrupos(distance_matrix, nMembers):
 						#se t1 tiver o termo mais proximos o valor de distance_matrix[tt1[0]][tt1[1]] recebera 100
 						# e todos os valores da linha t2 e da coluna t2 receberao 100
 						distance_matrix[tt1[0]][tt1[1]] = 100
+						#teste
+						distance_matrix[tt1[1]][tt1[0]] = 100
 						distance_matrix[t2,:]=100
 						distance_matrix[:,t2]=100
 						v = np.where(np.isin(tt1, grupo, invert=True))
@@ -140,11 +144,16 @@ def criaGrupos(distance_matrix, nMembers):
 							distance_matrix[:,t1]=100
 							distance_matrix[:,tt1[v[0][0]]]=100
 							distance_matrix[tt1[v[0][0]],:]=100
+							distance_matrix[t2,:]=100
+							distance_matrix[:,t2]=100
+							distance_matrix[:,tt2[v[0][0]]]=100
+							distance_matrix[tt2[v[0][0]],:]=100
 							
 					else:
 						#se t2 tiver o termo mais proximos o valor de distance_matrix[tt2[0]][tt2[1]] recebera 100
 						# e todos os valores da linha t1 e da coluna t1 receberao 100
 						distance_matrix[tt2[0]][tt2[1]] = 100
+						distance_matrix[tt2[1]][tt2[0]] = 100
 						distance_matrix[t1,:]=100
 						distance_matrix[:,t1]=100
 						print("np is in %s"%np.isin(tt2, grupo, invert=True))
@@ -157,6 +166,10 @@ def criaGrupos(distance_matrix, nMembers):
 						t2 = tt2[1]
 						#se a quantidade de membros do grupo for igual ao desejado as colunas e linhas t2 tb sao setadas para 100
 						if(len(grupo) == nMembers):
+							distance_matrix[t1,:]=100
+							distance_matrix[:,t1]=100
+							distance_matrix[:,tt1[v[0][0]]]=100
+							distance_matrix[tt1[v[0][0]],:]=100
 							distance_matrix[t2,:]=100
 							distance_matrix[:,t2]=100
 							distance_matrix[:,tt2[v[0][0]]]=100
