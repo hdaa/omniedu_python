@@ -68,7 +68,7 @@ import clusterHierarquico as ch
 #gruposFormadosMatr = []
 #gruposFormados = []
 turma = 4
-query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma="+str(turma)
+query = "select h.id_usuario,u.matricula,h.sequencia from horario_aluno h, usuario u, turma_aluno ta where h.ativo = 'S' and u.id = h.id_usuario and u.id = ta.id_aluno and ta.id_turma="+str(turma)+" and u.controle=0";
 resultado = genDistanceMatrix(query)
 print("matriz de similaridade %s"%resultado[0])
 print("matriculas %s"%resultado[1])
@@ -85,22 +85,29 @@ j=1
 for g in grupos:
 	qryGrupo = "insert into grupo (nome,id_turma) values('Grupo Temp "+str(j)+"',"+str(turma)+")";
 	print("qryGrupo %s"%qryGrupo)
-	mycursor.execute(qryGrupo)
-	#pega o ultimo id de grupo cadastrado
-	lastIdGrupo = mycursor.lastrowid
-	print ("lastIdGrupo %s"%lastIdGrupo)
-	#inicia o cadastro dos membros deste grupo
-	qryValues = ""
-	if(lastIdGrupo != ""):
-		i=1
-		for m in g:
-			qryValues+= "("+str(lastIdGrupo)+"," +str(matriculas[m])+ ")"
-			if i < len(g):
-				qryValues=qryValues + "," 
-			i = i +1
-	j+=1
-	#insere os membros do grupo atual
+	i=1
+	for m in g:
+		qryValues+= "("+str(1)+"," +str(matriculas[m])+ ")"
+		if i < len(g):
+			qryValues=qryValues + "," 
+		i = i +1
 	print("qryValues %s"%qryValues)
+	#mycursor.execute(qryGrupo)
+	#pega o ultimo id de grupo cadastrado
+	#lastIdGrupo = mycursor.lastrowid
+	#print ("lastIdGrupo %s"%lastIdGrupo)
+	#inicia o cadastro dos membros deste grupo
+	#qryValues = ""
+	#if(lastIdGrupo != ""):
+#		i=1
+#		for m in g:
+#			qryValues+= "("+str(lastIdGrupo)+"," +str(matriculas[m])+ ")"
+#			if i < len(g):
+#				qryValues=qryValues + "," 
+#			i = i +1
+#	j+=1
+	#insere os membros do grupo atual
+	#print("qryValues %s"%qryValues)
 	#qryInsert = "insert into grupo_aluno (id_grupo,id_aluno) values "+qryValues
 	#print("qryInsert %s"%qryInsert)
 	#mycursor.execute(qryInsert)
