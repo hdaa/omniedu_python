@@ -4,5 +4,5 @@ mydb = mysql.connector.connect(
 	host="localhost",
 	user="root",
 	passwd="root",
-	database="omniedu"
+	database="omni_dev"
 	)
